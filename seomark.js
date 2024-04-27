@@ -24,7 +24,9 @@ const h2Pattern = /^## (.+)/;
 const h1Pattern = /^# (.+)/;
 const commentPattern = /^\/\/(.+)/;
 const linkPattern = /^\[([^\]]+)\]\(([^)]+)\)/;
-const imagePattern = /^\!\[([^\]]+)\]\(([^)]+)\)/;
+//const imagePattern = /^\!\[([^\]]+)\]\(([^)]+)\)/;
+const imagePattern = /!\[([^[\]]*)\]\(([^()\s]*)(?: "([^"]*)")?\)/; //画像の出典機能
+
 const dlPattern = /^:([^:]+):([^:]+)/;
 const quotePattern = /^> (.+)/;
 const strongPattern = /\*(.*?)\*/g;
@@ -58,11 +60,23 @@ function parseLine(line) {
     const attr = linkAttr(link)
     return `<a href="${link}" ${attr}>${word}</a>`;
   }
+ /*
   if ((match = line.match(imagePattern))) {
     const word = match[1];
     const link = match[2];
     return `<img src="${link}" alt="${word}">`;
   }
+ */
+  //画像の出典機能追加
+  //var test1 = "![画像のalt](画像url)";
+  //var test2 = `![画像](xyz.jpg "i.img.com")`;
+  if ((match = line.match(imagePattern))) {
+    const word = match[1];
+    const link = match[2];
+    const ref = match[3]? ` - 出典: ${match[3]}`:''
+    return `<img src="${link}" alt="${word}${ref}">`;
+  } 
+ 
   if ((match = line.match(dlPattern))) {
     const dt = parseInner(match[1]);
     const dd = parseInner(match[2]);

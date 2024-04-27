@@ -1,4 +1,10 @@
 # seomark
+```
+import "https://hashsan.github.io/seomark/seomark.js"
+const temp=`# h1`
+const html = seomark(temp)
+```
+
 line parser
 
 ```

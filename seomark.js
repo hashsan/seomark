@@ -1,4 +1,6 @@
 /*
+//スタイルタグだけは複数行を許可。
+
 var help=`
  seomarkのできること。解析は１行のみ。
  1. # あいうえを      ---> <h1>あいうえを</h1>
@@ -32,7 +34,8 @@ const httpPattern = /^http/;
 
 // テキストを処理する関数
 function seomark(text) {
-  return text.trim().split('\n').map(parseLine).join('\n');
+  return replaceStyleTags(text.trim()) 
+   .split('\n').map(parseLine).join('\n');
 }
 
 // 1行ごとに処理する関数
@@ -97,6 +100,22 @@ function linkAttr(url){
   }
   return '';
 }
+
+//styleタグだけは複数行を許可し、改行をなくすことで対応する。
+function replaceStyleTags(inputString) {
+    const styleTagsRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gi;
+
+    // 改行を削除した後の置換関数
+    function replaceFunc(match, group) {
+        return match.replace(/\r?\n|\r/g, ''); // 改行を削除
+    }
+
+    const replacedString = inputString.replace(styleTagsRegex, replaceFunc);
+    return replacedString;
+}
+
+
+
 
 window.seomark = seomark;
 
